@@ -1,0 +1,39 @@
+:root {
+  --yt-theme-radius: 10px;
+  --yt-theme-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Gentle defaults for Paper-like elevations YouTube uses */
+* {
+  --paper-elevation-2dp_-_box-shadow: var(--yt-theme-shadow);
+  --paper-elevation-3dp_-_box-shadow: var(--yt-theme-shadow);
+}
+
+/* Grid items and list cards */
+ytd-rich-item-renderer,
+ytd-grid-video-renderer,
+ytd-playlist-renderer,
+ytd-compact-video-renderer {
+  border-radius: var(--yt-theme-radius);
+  box-shadow: var(--yt-theme-shadow);
+  overflow: hidden;
+}
+
+/* Thumbnails */
+ytd-thumbnail,
+ytd-thumbnail #thumbnail,
+ytd-thumbnail img,
+yt-img-shadow,
+yt-img-shadow img {
+  border-radius: var(--yt-theme-radius);
+  box-shadow: var(--yt-theme-shadow);
+  overflow: hidden;
+}
+
+/* Search box and chips rounding */
+ytd-searchbox,
+ytd-searchbox input,
+yt-chip-cloud-chip-renderer,
+yt-chip-cloud-chip-renderer #chip-container {
+  border-radius: calc(var(--yt-theme-radius) + 2px) !important;
+}

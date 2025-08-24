@@ -1,0 +1,16 @@
+{
+  "name": "YouTube Clean Minimal Theme",
+  "version": "0.1.0",
+  "manifest_version": 3,
+  "description": "Minimal, lightweight, slightly rounded YouTube theme with subtle shadows. Customizable radius and shadow strength.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_page": "options.html"
+}

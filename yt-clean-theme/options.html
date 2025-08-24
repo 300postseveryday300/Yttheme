@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>YouTube Clean Minimal Theme — Options</title>
+    <style>
+      :root {
+        --yt-theme-radius: 10px;
+        --yt-theme-shadow: 0 6px 18px 0 rgba(0, 0, 0, 0.06);
+        --text: #0f0f0f;
+        --bg: #ffffff;
+        --muted: #666;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #0f0f0f; --text: #f1f1f1; --muted: #aaa; }
+      }
+      html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; }
+      .wrap { max-width: 620px; margin: 24px auto; padding: 0 16px; }
+      h1 { font-size: 18px; margin: 0 0 12px; }
+      .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; margin: 12px 0; }
+      label { font-weight: 600; }
+      .hint { color: var(--muted); font-weight: 400; font-size: 12px; }
+      input[type="range"] { width: 260px; }
+      .preview { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .card { height: 84px; background: rgba(127,127,127,0.06); border-radius: var(--yt-theme-radius); box-shadow: var(--yt-theme-shadow); }
+      .footer { margin-top: 18px; color: var(--muted); font-size: 12px; }
+      a { color: inherit; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>YouTube Clean Minimal Theme</h1>
+
+      <div class="row">
+        <div>
+          <label for="radius">Corner radius</label>
+          <div class="hint">Slightly rounded look (0–18 px)</div>
+        </div>
+        <input id="radius" type="range" min="0" max="18" step="1" />
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="strength">Shadow strength</label>
+          <div class="hint">Subtle depth (0–100)</div>
+        </div>
+        <input id="strength" type="range" min="0" max="100" step="1" />
+      </div>
+
+      <div class="preview">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+      </div>
+
+      <div class="footer">Open YouTube in a new tab to see changes.</div>
+    </div>
+
+    <script>
+      const defaults = { radiusPx: 10, shadowStrength: 0.4 };
+      const radiusEl = document.getElementById('radius');
+      const strengthEl = document.getElementById('strength');
+
+      function applyPreview(radiusPx, strength01) {
+        document.documentElement.style.setProperty('--yt-theme-radius', `${radiusPx}px`);
+        const clamped = Math.max(0, Math.min(1, Number(strength01) || 0));
+        const blur = Math.round(14 + 10 * clamped);
+        const y = Math.round(4 + 4 * clamped);
+        const opacity = (0.04 + 0.05 * clamped).toFixed(3);
+        document.documentElement.style.setProperty('--yt-theme-shadow', `0 ${y}px ${blur}px 0 rgba(0, 0, 0, ${opacity})`);
+      }
+
+      function save(radiusPx, strength01) {
+        chrome.storage.sync.set({ radiusPx, shadowStrength: strength01 });
+      }
+
+      function init() {
+        chrome.storage.sync.get(defaults, (cfg) => {
+          const r = Number(cfg.radiusPx) || defaults.radiusPx;
+          const s01 = Number(cfg.shadowStrength);
+          const s = Number.isFinite(s01) ? s01 : defaults.shadowStrength;
+          radiusEl.value = String(r);
+          strengthEl.value = String(Math.round(s * 100));
+          applyPreview(r, s);
+        });
+
+        radiusEl.addEventListener('input', () => {
+          const r = Number(radiusEl.value) || 0;
+          const s = (Number(strengthEl.value) || 0) / 100;
+          applyPreview(r, s);
+          save(r, s);
+        });
+
+        strengthEl.addEventListener('input', () => {
+          const r = Number(radiusEl.value) || 0;
+          const s = (Number(strengthEl.value) || 0) / 100;
+          applyPreview(r, s);
+          save(r, s);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', init);
+    </script>
+  </body>
+</html>
